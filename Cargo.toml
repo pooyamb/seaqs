@@ -1,0 +1,38 @@
+[package]
+authors = ["Pouya M. B. <pooyamb@gmail.com>"]
+categories = ["web-programming"]
+description = "A mini tool to turn querystring into seaquery's condition"
+documentation = "https://docs.rs/seaqs"
+edition = "2018"
+keywords = ["serialization", "deserialization", "querystring", "serde"]
+license = "MIT OR Apache-2.0"
+name = "seaqs"
+readme = "README.md"
+repository = "https://github.com/pooyamb/seaqs/"
+version = "0.0.1"
+
+[dependencies]
+chrono = { version = "0.4.19", features = ["serde"] }
+serde = { version = "1.0.137", features = ["derive"] }
+uuid = { version = "1.1.2", features = ["serde"] }
+sea-query = { version = "0.28", optional = true, default-features = false, features = [
+    "derive",
+    "attr",
+    "with-uuid",
+    "with-chrono",
+] }
+serde_with = { version = "2.1", default-features = false, features = ["macros", "alloc"] }
+
+[dev-dependencies]
+serde-querystring = "0.1.0"
+sea-query = { version = "^0", default-features = false, features = [
+    "derive",
+    "attr",
+    "with-uuid",
+    "with-chrono",
+    "backend-postgres",
+] }
+
+[features]
+default = ["seaq"]
+seaq = ["sea-query"]
