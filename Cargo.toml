@@ -36,6 +36,6 @@ sea-query = { version = "^0", default-features = false, features = [
 ] }
 
 [features]
-default = ["seaq", "openapi"]
+default = ["seaq"]
 seaq = ["sea-query"]
 openapi = ["utoipa"]
