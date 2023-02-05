@@ -3,7 +3,7 @@ use std::fmt;
 use serde::Deserialize;
 
 #[derive(Default, Deserialize, Debug, PartialEq)]
-pub struct QueryFilter<T = ()> {
+pub struct QueryFilter<T> {
     pub start: Option<i32>,
     pub end: Option<i32>,
     pub sort: Option<String>,
@@ -100,6 +100,48 @@ impl std::str::FromStr for Order {
             "ASC" => Ok(Order::Asc),
             "DESC" => Ok(Order::Desc),
             _ => Err(()),
+        }
+    }
+}
+
+#[cfg(feature = "openapi")]
+mod openapi {
+    use utoipa::{
+        openapi::{KnownFormat, ObjectBuilder, RefOr, Schema, SchemaFormat, SchemaType},
+        ToSchema,
+    };
+
+    use crate::QueryFilter;
+
+    impl<T> ToSchema<'static> for QueryFilter<T>
+    where
+        T: ToSchema<'static>,
+    {
+        fn schema() -> (&'static str, RefOr<Schema>) {
+            (
+                // TODO: maybe we shouldn't use the internal schema's name
+                T::schema().0,
+                ObjectBuilder::new()
+                    .property(
+                        "start",
+                        ObjectBuilder::new()
+                            .schema_type(SchemaType::Integer)
+                            .format(Some(SchemaFormat::KnownFormat(KnownFormat::Int32))),
+                    )
+                    .property(
+                        "end",
+                        ObjectBuilder::new()
+                            .schema_type(SchemaType::Integer)
+                            .format(Some(SchemaFormat::KnownFormat(KnownFormat::Int32))),
+                    )
+                    .property("sort", ObjectBuilder::new().schema_type(SchemaType::String))
+                    .property(
+                        "order",
+                        ObjectBuilder::new().schema_type(SchemaType::String),
+                    )
+                    .property("filter", T::schema().1)
+                    .into(),
+            )
         }
     }
 }
