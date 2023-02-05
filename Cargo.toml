@@ -3,13 +3,13 @@ authors = ["Pouya M. B. <pooyamb@gmail.com>"]
 categories = ["web-programming"]
 description = "A mini tool to turn querystring into seaquery's condition"
 documentation = "https://docs.rs/seaqs"
-edition = "2018"
+edition = "2021"
 keywords = ["serialization", "deserialization", "querystring", "serde"]
 license = "MIT OR Apache-2.0"
 name = "seaqs"
 readme = "README.md"
 repository = "https://github.com/pooyamb/seaqs/"
-version = "0.0.1"
+version = "0.0.2"
 
 [dependencies]
 chrono = { version = "0.4.19", features = ["serde"] }
@@ -26,7 +26,7 @@ serde_with = { version = "2.1", default-features = false, features = ["macros", 
 utoipa = { version = "3", optional = true }
 
 [dev-dependencies]
-serde-querystring = "0.1.0"
+serde-querystring = "0.2.0"
 sea-query = { version = "^0", default-features = false, features = [
     "derive",
     "attr",
