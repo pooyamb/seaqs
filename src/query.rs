@@ -107,8 +107,11 @@ impl std::str::FromStr for Order {
 #[cfg(feature = "openapi")]
 mod openapi {
     use utoipa::{
-        openapi::{KnownFormat, ObjectBuilder, RefOr, Schema, SchemaFormat, SchemaType},
-        ToSchema,
+        openapi::{
+            path::{Parameter, ParameterBuilder, ParameterIn, ParameterStyle},
+            KnownFormat, ObjectBuilder, RefOr, Required, Schema, SchemaFormat, SchemaType,
+        },
+        IntoParams, ToSchema,
     };
 
     use crate::QueryFilter;
@@ -142,6 +145,65 @@ mod openapi {
                     .property("filter", T::schema().1)
                     .into(),
             )
+        }
+    }
+
+    impl<T> IntoParams for QueryFilter<T>
+    where
+        T: ToSchema<'static>,
+    {
+        fn into_params(_: impl Fn() -> Option<ParameterIn>) -> Vec<Parameter> {
+            [
+                ParameterBuilder::new()
+                    .name("start")
+                    .parameter_in(ParameterIn::Query)
+                    .style(Some(ParameterStyle::Form))
+                    .required(Required::False)
+                    .schema(Some(
+                        ObjectBuilder::new()
+                            .schema_type(SchemaType::Integer)
+                            .format(Some(SchemaFormat::KnownFormat(KnownFormat::Int32))),
+                    ))
+                    .build(),
+                ParameterBuilder::new()
+                    .name("end")
+                    .parameter_in(ParameterIn::Query)
+                    .style(Some(ParameterStyle::Form))
+                    .required(Required::False)
+                    .schema(Some(
+                        ObjectBuilder::new()
+                            .schema_type(SchemaType::Integer)
+                            .format(Some(SchemaFormat::KnownFormat(KnownFormat::Int32))),
+                    ))
+                    .build(),
+                ParameterBuilder::new()
+                    .name("sort")
+                    .parameter_in(ParameterIn::Query)
+                    .style(Some(ParameterStyle::Form))
+                    .required(Required::False)
+                    .schema(Some(ObjectBuilder::new().schema_type(SchemaType::String)))
+                    .build(),
+                ParameterBuilder::new()
+                    .name("order")
+                    .parameter_in(ParameterIn::Query)
+                    .style(Some(ParameterStyle::Form))
+                    .required(Required::False)
+                    .schema(Some(
+                        ObjectBuilder::new()
+                            .schema_type(SchemaType::String)
+                            .enum_values(Some(["ASC", "DESC"])),
+                    ))
+                    .build(),
+                ParameterBuilder::new()
+                    .name("filter")
+                    .parameter_in(ParameterIn::Query)
+                    .style(Some(ParameterStyle::DeepObject))
+                    .explode(Some(true))
+                    .required(Required::False)
+                    .schema(Some(T::schema().1))
+                    .build(),
+            ]
+            .to_vec()
         }
     }
 }
