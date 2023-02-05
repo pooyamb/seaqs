@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 name = "seaqs"
 readme = "README.md"
 repository = "https://github.com/pooyamb/seaqs/"
-version = "0.0.2"
+version = "0.0.3"
 
 [dependencies]
 chrono = { version = "0.4.19", features = ["serde"] }
