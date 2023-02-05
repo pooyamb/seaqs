@@ -23,6 +23,8 @@ sea-query = { version = "0.28", optional = true, default-features = false, featu
 ] }
 serde_with = { version = "2.1", default-features = false, features = ["macros", "alloc"] }
 
+utoipa = { version = "3", optional = true }
+
 [dev-dependencies]
 serde-querystring = "0.1.0"
 sea-query = { version = "^0", default-features = false, features = [
@@ -34,5 +36,6 @@ sea-query = { version = "^0", default-features = false, features = [
 ] }
 
 [features]
-default = ["seaq"]
+default = ["seaq", "openapi"]
 seaq = ["sea-query"]
+openapi = ["utoipa"]

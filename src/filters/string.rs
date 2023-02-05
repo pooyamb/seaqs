@@ -4,6 +4,7 @@ use serde::Deserialize;
 use serde_with::EnumMap;
 
 #[cfg_attr(test, derive(Eq, PartialEq, Ord, PartialOrd))]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum StringFilter<'a> {
@@ -25,6 +26,21 @@ impl<'a> StringFilterSet<'a> {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg(feature = "openapi")]
+impl<'a, '__s> utoipa::ToSchema<'__s> for StringFilterSet<'a> {
+    fn schema() -> (
+        &'__s str,
+        utoipa::openapi::RefOr<utoipa::openapi::schema::Schema>,
+    ) {
+        (
+            "StringFilterSet",
+            utoipa::openapi::schema::ArrayBuilder::new()
+                .items(StringFilter::schema().1)
+                .into(),
+        )
     }
 }
 

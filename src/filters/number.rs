@@ -2,6 +2,7 @@ use serde::Deserialize;
 use serde_with::EnumMap;
 
 #[cfg_attr(test, derive(Eq, PartialEq, Ord, PartialOrd))]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
 #[derive(Debug, Deserialize)]
 pub enum NumberFilter {
     #[serde(rename = "eq")]
@@ -30,6 +31,21 @@ impl NumberFilterSet {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg(feature = "openapi")]
+impl<'__s> utoipa::ToSchema<'__s> for NumberFilterSet {
+    fn schema() -> (
+        &'__s str,
+        utoipa::openapi::RefOr<utoipa::openapi::schema::Schema>,
+    ) {
+        (
+            "NumberFilterSet",
+            utoipa::openapi::schema::ArrayBuilder::new()
+                .items(NumberFilter::schema().1)
+                .into(),
+        )
     }
 }
 

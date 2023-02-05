@@ -3,6 +3,7 @@ use serde_with::EnumMap;
 use uuid::Uuid;
 
 #[cfg_attr(test, derive(Eq, PartialEq, Ord, PartialOrd))]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
 #[derive(Debug, Deserialize)]
 pub enum UuidFilter {
     #[serde(rename = "eq")]
@@ -23,6 +24,21 @@ impl UuidFilterSet {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg(feature = "openapi")]
+impl<'__s> utoipa::ToSchema<'__s> for UuidFilterSet {
+    fn schema() -> (
+        &'__s str,
+        utoipa::openapi::RefOr<utoipa::openapi::schema::Schema>,
+    ) {
+        (
+            "UuidFilterSet",
+            utoipa::openapi::schema::ArrayBuilder::new()
+                .items(UuidFilter::schema().1)
+                .into(),
+        )
     }
 }
 

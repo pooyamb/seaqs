@@ -3,6 +3,7 @@ use serde::Deserialize;
 use serde_with::EnumMap;
 
 #[cfg_attr(test, derive(Eq, PartialEq, Ord, PartialOrd))]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum DateFilter {
@@ -26,6 +27,21 @@ impl DateFilterSet {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg(feature = "openapi")]
+impl<'__s> utoipa::ToSchema<'__s> for DateFilterSet {
+    fn schema() -> (
+        &'__s str,
+        utoipa::openapi::RefOr<utoipa::openapi::schema::Schema>,
+    ) {
+        (
+            "DateFilterSet",
+            utoipa::openapi::schema::ArrayBuilder::new()
+                .items(DateFilter::schema().1)
+                .into(),
+        )
     }
 }
 
